@@ -2,6 +2,7 @@
 
 rpm -Uvh https://repo.zabbix.com/zabbix/4.2/rhel/7/x86_64/zabbix-release-4.2-1.el7.noarch.rpm
 yum -y install epel-release nginx java zabbix-agent
+systemctl enable nginx
 
   mkdir /opt/tomcat
   cd /opt/tomcat/
