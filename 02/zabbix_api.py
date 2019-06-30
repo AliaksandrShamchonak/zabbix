@@ -7,7 +7,6 @@ url = "http://" + zabbix_server + "/api_jsonrpc.php"
 uname = "Admin"
 upassword = "zabbix"
 
-# newhost = "Cloudhost"
 newgroup = 'CloudHosts'
 newtemplate = 'CloudTemplate'
 
@@ -16,12 +15,7 @@ def post(data):
     headers = {'Content-Type': 'application/json'}
     rdata = json.dumps(data)
     auth = HTTPBasicAuth(uname, upassword)
-    r = requests.post(url, data=rdata, headers=headers, auth=auth)#.json()["result"]
-    # print("url!", url)
-    # print("headers!", headers)
-    # print("rdata!", rdata)
-    # print("r!", r)
-    # print("data!", data)
+    r = requests.post(url, data=rdata, headers=headers, auth=auth)
     return r
 
 
@@ -35,7 +29,6 @@ auth_token = post({
     "auth": None,
     "id": 0}
 ).json()["result"]
-# print("auth_token!", auth_token)
 
 
 def gethost():
@@ -53,9 +46,6 @@ def gethost():
     }).json()["result"]
 server_hostname = gethost()[0]['host']
 server_hostid = gethost()[0]['hostid']
-# print("server_hostname!:", server_hostname)
-# print("server_hostid!:", server_hostid)
-# print("gethost!:", gethost())
 
 
 def gettemplate():
@@ -71,7 +61,6 @@ def gettemplate():
         "id": 2,
         "auth": auth_token
     }).json()["result"]
-# print("gettemplate!:", gettemplate())
 
 
 def gethostgroup():
@@ -87,7 +76,6 @@ def gethostgroup():
         "id": 3,
         "auth": auth_token
     }).json()["result"]
-# print("gethostgroup!:", gethostgroup())
 
 
 def createhostgroup(newgroup):
@@ -100,7 +88,6 @@ def createhostgroup(newgroup):
         "id": 4,
         "auth": auth_token
     }).json()["result"]
-# print("createhostgroup!:", createhostgroup(newgroup))
 
 
 def createtemplate(groupid):
@@ -116,7 +103,6 @@ def createtemplate(groupid):
         "id": 5,
         "auth": auth_token
     }).json()["result"]
-# print("createtemplate!:", createtemplate(newgroup))
 
 
 def createhost(hostname, ipaddress, groupid, templateid):
@@ -145,27 +131,18 @@ def createhost(hostname, ipaddress, groupid, templateid):
     })
 
 
-# groupid = 0
-# templateid = 0
-# print("len(gethostgroup())!:", len(gethostgroup()))
 if len(gethostgroup()) == 0:
     groupid = createhostgroup(newgroup)['groupids'][0]
-    # print("Host groups created:", groupid)
     templateid = createtemplate(groupid)['templateids'][0]
-    # print("Templates created:", templateid)
 elif len(gettemplate()) == 0:
     groupid = gethostgroup()[0]['groupid']
     templateid = createtemplate(groupid)['templateids'][0]
-    # print("Templates created:", templateid)
 else:
     groupid = gethostgroup()[0]['groupid']
     templateid = gettemplate()[0]['templateid']
-    # print("Templates created:", templateid)
 
 hostname = socket.gethostname()
 ipaddress = check_output(['hostname', '--all-ip-addresses']).split()[1]
-# print(hostname)
-# print (ipaddress)
 
 createhost(hostname, ipaddress, groupid, templateid)
 print("New host %s (%s) was sucessfully registered." % (hostname, ipaddress))
