@@ -1,0 +1,26 @@
+Vagrant.configure("2") do |config|
+
+  config.vm.define "tomcat" do |zb|
+    zb.vm.box = "sbeliakou/centos"
+    zb.vm.hostname = "tomcat"
+    zb.vm.provider "virtualbox" do |zb1|
+      zb1.name = "tomcat-VM-Machine"
+    end
+    zb.vm.network "private_network", ip: "192.168.219.110"
+
+    zb.vm.provision "shell", path: "tomcat.sh"
+  end
+
+  config.vm.define "elastic" do |ng|
+    ng.vm.box = "sbeliakou/centos"
+    ng.vm.hostname = "elastic"
+    ng.vm.provider "virtualbox" do |wb|
+      wb.name = "elastic-VM-Machine"
+    end
+    ng.vm.network "private_network", ip: "192.168.219.111"
+    ng.vm.provision "shell", path: "elastic.sh"
+
+  end
+
+end
+
